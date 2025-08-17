@@ -16,24 +16,7 @@ jobs:
           flutter-version: '3.35.1'
       - name: Install dependencies
         run: flutter pub get
-      - name: Build iOS (simulator)
-        run: flutter build ios --simulator --no-codesign
-      - name: List build/ios/iphonesimulator
-        run: |
-          echo "Listing build/ios/iphonesimulator:"
-          ls -lR build/ios/iphonesimulator || true
-      - name: Archive .app for simulator
-        run: |
-          mkdir -p build-artifacts
-          if [ -d build/ios/iphonesimulator/Runner.app ]; then
-            cp -R build/ios/iphonesimulator/Runner.app build-artifacts/Runner.app
-          fi
-      - name: Upload .app artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-app-unsigned
-          path: build-artifacts/Runner.app
-          if-no-files-found: warn
+  # Simulator build removed due to missing iOS 18.0 simulator on runner
       - name: Build iOS (device, unsigned)
         run: flutter build ios --no-codesign
       - name: List build/ios/iphoneos
