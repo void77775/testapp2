@@ -18,23 +18,37 @@ jobs:
         run: flutter pub get
       - name: Build iOS (simulator)
         run: flutter build ios --simulator --no-codesign
+      - name: List build/ios/iphonesimulator
+        run: |
+          echo "Listing build/ios/iphonesimulator:"
+          ls -lR build/ios/iphonesimulator || true
       - name: Archive .app for simulator
         run: |
           mkdir -p build-artifacts
-          cp -R build/ios/iphonesimulator/Runner.app build-artifacts/Runner.app
+          if [ -d build/ios/iphonesimulator/Runner.app ]; then
+            cp -R build/ios/iphonesimulator/Runner.app build-artifacts/Runner.app
+          fi
       - name: Upload .app artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-app-unsigned
           path: build-artifacts/Runner.app
+          if-no-files-found: warn
       - name: Build iOS (device, unsigned)
         run: flutter build ios --no-codesign
+      - name: List build/ios/iphoneos
+        run: |
+          echo "Listing build/ios/iphoneos:"
+          ls -lR build/ios/iphoneos || true
       - name: Archive .xcarchive
         run: |
           mkdir -p build-artifacts
-          cp -R build/ios/iphoneos/Runner.xcarchive build-artifacts/Runner.xcarchive || true
+          if [ -d build/ios/iphoneos/Runner.xcarchive ]; then
+            cp -R build/ios/iphoneos/Runner.xcarchive build-artifacts/Runner.xcarchive
+          fi
       - name: Upload .xcarchive artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-xcarchive-unsigned
           path: build-artifacts/Runner.xcarchive
+          if-no-files-found: warn
